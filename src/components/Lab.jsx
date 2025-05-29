@@ -21,6 +21,18 @@ export const RiveDemo = () => {
     assetLoader: loadAllAssets,
   });
 
+  // Hardcoded redirect link logic
+  const handleRedirect = () => {
+    const url = "https://bizops.knowledgeowl.com/s3/birthdayfun";
+    window.location.href = url;
+
+    setTimeout(() => {
+      if (document.hasFocus()) {
+        window.open(url, "_blank");
+      }
+    }, 500);
+  };
+
   // Rive Event Listener
   useEffect(() => {
     if (rive) {
@@ -29,46 +41,22 @@ export const RiveDemo = () => {
 
         if (eventData.name === "Close") {
           console.log("Close event triggered");
-          window.close(); // Note: only works if the page was opened via JS
+          window.close();
         }
 
-        if (eventData.name === "Clicked") {
-          console.log("Clicked event triggered");
-          link(); // call link function defined below
+        if (eventData.name === "Open") {
+          console.log("Open event triggered");
+          handleRedirect();
         }
       };
 
       rive.on(EventType.RiveEvent, onRiveEventReceived);
 
-      // Cleanup listener on unmount
       return () => {
         rive.off(EventType.RiveEvent, onRiveEventReceived);
       };
     }
   }, [rive]);
-
-  // Link redirect logic
-  const link = () => {
-    const platform = "web"; // adjust this as needed
-    const userName = "john_doe"; // your username logic
-    const webUrl = {
-      web: "https://bizops.knowledgeowl.com/s3/birthdayfun?ref=",
-    };
-    const appUrl = {
-      web: "https://bizops.knowledgeowl.com/s3/birthdayfun?appref=",
-    };
-
-    const webPlatformUrl = webUrl[platform] + userName;
-    const appPlatformUrl = appUrl[platform] + userName;
-
-    window.location.href = appPlatformUrl;
-
-    setTimeout(() => {
-      if (document.hasFocus()) {
-        window.open(webPlatformUrl, "_blank");
-      }
-    }, 500);
-  };
 
   return (
     <div className="RiveContainer">
@@ -87,7 +75,6 @@ const loadAllAssets = async (asset) => {
     font.unref();
     return true;
   }
-
   return false;
 };
 
